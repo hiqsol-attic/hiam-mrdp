@@ -1,12 +1,12 @@
 <?php
 
 /*
- * Identity and Access Management server providing OAuth2, RBAC and logging
+ * HIAM module for MRDP database compatibility
  *
- * @link      https://github.com/hiqdev/hiam-core
- * @package   hiam-core
+ * @link      https://github.com/hiqdev/hiam-mrdp
+ * @package   hiam-mrdp
  * @license   BSD-3-Clause
- * @copyright Copyright (c) 2014-2016, HiQDev (http://hiqdev.com/)
+ * @copyright Copyright (c) 2016, HiQDev (http://hiqdev.com/)
  */
 
 namespace hiam\mrdp\storage;
@@ -67,7 +67,7 @@ class ClientQuery extends \yii\db\ActiveQuery
     public function whereUsername($username)
     {
         $userId = (int) $username;
-        if ($userId>0) {
+        if ($userId > 0) {
             return $this->whereId($userId);
         }
 
