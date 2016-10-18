@@ -15,7 +15,6 @@ This package provides MRDP database compatibility classes:
 
 - Identity model with seller and seller_id
 - Client storage model with ClientQuery
-- HiamRemoteUser storage model
 
 ## Installation
 

@@ -7,9 +7,8 @@ package:
     namespace:      hiam\mrdp
     description:    |
         [HIAM](https://github.com/hiqdev/hiam-core) is Identity and Access Management server.
-        
+
         This package provides MRDP database compatibility classes:
 
         - Identity model with seller and seller_id
         - Client storage model with ClientQuery
-        - HiamRemoteUser storage model
