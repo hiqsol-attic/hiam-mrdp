@@ -30,31 +30,43 @@ class Client extends \yii\db\ActiveRecord
     public $username;
     public $last_name;
     public $first_name;
+    public $allowed_ips;
 
     public function rules()
     {
         return [
             [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
+            ['allowed_ips', 'trim'],
         ];
     }
 
     public function init()
     {
         parent::init();
-        $this->on(static::EVENT_BEFORE_INSERT, function ($event) {
-            $seller = static::findOne(['username' => Yii::$app->params['user.seller']]);
-            $model = $event->sender;
-            $model->login = $model->username ?: $model->email;
-            $model->seller_id = $seller->id;
-        });
-        $this->on(static::EVENT_AFTER_INSERT, function ($event) {
-            $model = $event->sender;
-            $model->id = $model->obj_id;
-            $model->type = 'client';
-            $contact = Contact::findOne($model->id);
-            $contact->setAttributes($model->getAttributes());
-            $contact->save();
-        });
+        $this->on(static::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
+        $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterSave']);
+        $this->on(static::EVENT_AFTER_UPDATE,  [$this, 'onAfterSave']);
+    }
+
+    public function onBeforeInsert()
+    {
+        $seller = static::findOne(['username' => Yii::$app->params['user.seller']]);
+        $this->login = $this->username ?: $this->email;
+        $this->seller_id = $seller->id;
+    }
+
+    public function onAfterSave()
+    {
+        $this->id = $this->id ?: $this->obj_id;
+        $this->type = $this->type ?: 'client';
+        $contact = Contact::findOne($this->id);
+        $contact->setAttributes($this->getAttributes());
+        $contact->save();
+        self::getDb()->createCommand('SELECT set_value(:id,:prop,:value)', [
+            'id' => $this->id,
+            'prop' => 'client,access:allowed_ips',
+            'value' => $this->allowed_ips,
+        ])->execute();
     }
 
     public static function find()

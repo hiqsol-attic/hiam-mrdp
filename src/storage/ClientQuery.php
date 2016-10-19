@@ -26,6 +26,7 @@ class ClientQuery extends \yii\db\ActiveQuery
                 'z.name         AS state',
                 'k.first_name   AS first_name',
                 'k.last_name    AS last_name',
+                'i.value        AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
             ])
             ->from('client          c')
@@ -33,6 +34,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->innerJoin('ref        y', 'y.obj_id=c.type_id')
             ->innerJoin('ref        z', "z.obj_id=c.state_id AND z.name IN ('ok')")
             ->leftJoin('contact     k', 'k.obj_id=c.obj_id')
+            ->leftJoin('value       i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
         ;
     }
 
