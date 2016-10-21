@@ -30,13 +30,15 @@ class Client extends \yii\db\ActiveRecord
     public $username;
     public $last_name;
     public $first_name;
+
     public $allowed_ips;
+    public $totp_secret;
 
     public function rules()
     {
         return [
             [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
-            ['allowed_ips', 'trim'],
+            [['allowed_ips', 'totp_secret'], 'trim'],
         ];
     }
 
@@ -62,10 +64,16 @@ class Client extends \yii\db\ActiveRecord
         $contact = Contact::findOne($this->id);
         $contact->setAttributes($this->getAttributes());
         $contact->save();
+        $this->saveValue('client,access:allowed_ips', $this->allowed_ips);
+        $this->saveValue('client,access:totp_secret', $this->totp_secret);
+    }
+
+    public function saveValue($prop, $value)
+    {
         self::getDb()->createCommand('SELECT set_value(:id,:prop,:value)', [
             'id' => $this->id,
-            'prop' => 'client,access:allowed_ips',
-            'value' => $this->allowed_ips,
+            'prop' => $prop,
+            'value' => $value,
         ])->execute();
     }
 

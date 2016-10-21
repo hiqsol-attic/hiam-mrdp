@@ -27,6 +27,7 @@ class ClientQuery extends \yii\db\ActiveQuery
                 'k.first_name   AS first_name',
                 'k.last_name    AS last_name',
                 'i.value        AS allowed_ips',
+                't.value        AS totp_secret',
                 'coalesce(c.email,k.email) AS email',
             ])
             ->from('client          c')
@@ -35,6 +36,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->innerJoin('ref        z', "z.obj_id=c.state_id AND z.name IN ('ok')")
             ->leftJoin('contact     k', 'k.obj_id=c.obj_id')
             ->leftJoin('value       i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
+            ->leftJoin('value       t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
         ;
     }
 
@@ -79,8 +81,8 @@ class ClientQuery extends \yii\db\ActiveQuery
     public function wherePassword($password)
     {
         return parent::andWhere(
-            'check_password(:password,c.password) OR check_password(:password,t.value)',
+            'check_password(:password,c.password) OR check_password(:password,tmp.value)',
             [':password' => $password]
-        )->leftJoin('value t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:tmp_pwd')");
+        )->leftJoin('value tmp', "tmp.obj_id=c.obj_id AND tmp.prop_id=prop_id('client,access:tmp_pwd')");
     }
 }
