@@ -30,10 +30,10 @@ class ClientQuery extends \yii\db\ActiveQuery
                 't.value        AS totp_secret',
                 'coalesce(c.email,k.email) AS email',
             ])
-            ->from('client          c')
-            ->innerJoin('client     r', 'r.obj_id=c.seller_id')
+            ->from('zclient         c')
+            ->innerJoin('zclient    r', 'r.obj_id=c.seller_id')
             ->innerJoin('ref        y', 'y.obj_id=c.type_id')
-            ->innerJoin('ref        z', "z.obj_id=c.state_id AND z.name IN ('ok')")
+            ->innerJoin('ref        z', "z.obj_id=c.state_id AND z.name IN ('ok', 'active')")
             ->leftJoin('contact     k', 'k.obj_id=c.obj_id')
             ->leftJoin('value       i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
             ->leftJoin('value       t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")

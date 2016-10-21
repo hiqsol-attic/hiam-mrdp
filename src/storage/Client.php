@@ -81,4 +81,9 @@ class Client extends \yii\db\ActiveRecord
     {
         return new ClientQuery(get_called_class());
     }
+
+    public function getSeller_id()
+    {
+        return $this->reseller_id;
+    }
 }
