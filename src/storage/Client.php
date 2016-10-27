@@ -17,13 +17,13 @@ use Yii;
  * Client model.
  *
  * @property integer $obj_id PK
+ * @property integer $id synced with obj_id
  * @property integer $seller_id
  * @property string $password
  * @property string $email
  */
 class Client extends \yii\db\ActiveRecord
 {
-    public $id;
     public $type;
     public $state;
     public $seller;
@@ -81,6 +81,16 @@ class Client extends \yii\db\ActiveRecord
     public static function find()
     {
         return new ClientQuery(get_called_class());
+    }
+
+    public function setId($value)
+    {
+        $this->obj_id = $value;
+    }
+
+    public function getId()
+    {
+        return $this->obj_id;
     }
 
     public function getSeller_id()
