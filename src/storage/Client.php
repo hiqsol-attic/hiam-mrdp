@@ -62,7 +62,7 @@ class Client extends \yii\db\ActiveRecord
         $this->id = $this->id ?: $this->obj_id;
         $this->type = $this->type ?: 'client';
         $contact = Contact::findOne($this->id);
-        $contact->setAttributes($this->getAttributes());
+        $contact->setAttributes($this->getAttributes($contact->safeAttributes()));
         $contact->save();
         $this->saveValue('client,access:totp_secret', $this->totp_secret);
         $this->saveValue('client,access:allowed_ips', $this->allowed_ips);
