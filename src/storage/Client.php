@@ -26,6 +26,7 @@ class Client extends \yii\db\ActiveRecord
 {
     public $type;
     public $state;
+    public $roles;
     public $seller;
     public $username;
     public $last_name;

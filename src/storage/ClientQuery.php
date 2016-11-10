@@ -24,20 +24,22 @@ class ClientQuery extends \yii\db\ActiveQuery
                 'c.seller_id    AS seller_id',
                 'y.name         AS type',
                 'z.name         AS state',
+                'e.roles        AS roles',
                 'k.first_name   AS first_name',
                 'k.last_name    AS last_name',
                 't.value        AS totp_secret',
                 'coalesce(i.value,l.value) AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
             ])
-            ->from('zclient         c')
-            ->innerJoin('zclient    r', 'r.obj_id=c.seller_id')
-            ->innerJoin('ref        y', 'y.obj_id=c.type_id')
-            ->innerJoin('ref        z', "z.obj_id=c.state_id AND z.name IN ('ok', 'active')")
-            ->leftJoin('contact     k', 'k.obj_id=c.obj_id')
-            ->leftJoin('value       t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
-            ->leftJoin('value       i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
-            ->leftJoin('value       l', "l.obj_id=c.obj_id AND l.prop_id=prop_id('login_ips:panel')")
+            ->from('zclient             c')
+            ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')
+            ->innerJoin('ref            y', 'y.obj_id=c.type_id')
+            ->innerJoin('ref            z', "z.obj_id=c.state_id AND z.name IN ('ok', 'active')")
+            ->leftJoin('contact         k', 'k.obj_id=c.obj_id')
+            ->leftJoin('value           t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
+            ->leftJoin('value           i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
+            ->leftJoin('value           l', "l.obj_id=c.obj_id AND l.prop_id=prop_id('login_ips:panel')")
+            ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id')
         ;
     }
 

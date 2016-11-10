@@ -14,11 +14,13 @@ namespace hiam\mrdp\models;
 /**
  * Identity model for MRDP database.
  *
+ * @property string $roles
  * @property string $seller
  * @property integer $seller_id
  */
 class Identity extends \hiam\models\Identity
 {
+    public $roles;
     public $seller;
     public $seller_id;
 
@@ -32,6 +34,8 @@ class Identity extends \hiam\models\Identity
 
             ['seller',          'trim'],
             ['seller',          'string', 'min' => 2, 'max' => 64],
+
+            ['roles',           'trim'],
         ]);
     }
 }
