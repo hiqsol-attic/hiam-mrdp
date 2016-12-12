@@ -24,6 +24,8 @@ class Identity extends \hiam\models\Identity
     public $seller;
     public $seller_id;
 
+    protected $activeStates = ['ok', 'active'];
+
     /**
      * {@inheritdoc}
      */
@@ -37,5 +39,10 @@ class Identity extends \hiam\models\Identity
 
             ['roles',           'trim'],
         ]);
+    }
+
+    public function isActive()
+    {
+        return in_array($this->state, $this->activeStates, true);
     }
 }
