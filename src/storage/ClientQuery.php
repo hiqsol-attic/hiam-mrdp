@@ -34,7 +34,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->from('zclient             c')
             ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')
             ->innerJoin('ref            y', 'y.obj_id=c.type_id')
-            ->innerJoin('ref            z', "z.obj_id=c.state_id AND z.name IN ('ok', 'active')")
+            ->innerJoin('ref            z', "z.obj_id=c.state_id AND z.name IN ('ok', 'active', 'new')")
             ->leftJoin('contact         k', 'k.obj_id=c.obj_id')
             ->leftJoin('value           t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
             ->leftJoin('value           i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
@@ -48,7 +48,7 @@ class ClientQuery extends \yii\db\ActiveQuery
         if (!is_array($condition) || $condition[0]) {
             return parent::andWhere($condition);
         }
-        foreach (['id', 'username', 'password', 'email'] as $key) {
+        foreach (['id', 'username', 'password', 'email', 'active'] as $key) {
             if (isset($condition[$key])) {
                 $this->{"where$key"}($condition[$key]);
                 unset($condition[$key]);
@@ -87,5 +87,13 @@ class ClientQuery extends \yii\db\ActiveQuery
             'check_password(:password,c.password) OR check_password(:password,tmp.value)',
             [':password' => $password]
         )->leftJoin('value tmp', "tmp.obj_id=c.obj_id AND tmp.prop_id=prop_id('client,access:tmp_pwd')");
+    }
+
+    public function whereActive($is_active)
+    {
+        if (is_null($is_active)) {
+            return $this;
+        }
+        return parent::andWhere([$is_active ? 'in' : 'not in', 'z.name', ['ok', 'active']]);
     }
 }
