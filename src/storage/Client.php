@@ -12,6 +12,7 @@
 namespace hiam\mrdp\storage;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * Client model.
@@ -32,6 +33,7 @@ class Client extends \yii\db\ActiveRecord
     public $last_name;
     public $first_name;
 
+    public $email_confirmed;
     public $allowed_ips;
     public $totp_secret;
 
@@ -39,7 +41,8 @@ class Client extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
-            [['allowed_ips', 'totp_secret'], 'trim'],
+            [['state'], 'trim'],
+            [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
         ];
     }
 
@@ -47,6 +50,7 @@ class Client extends \yii\db\ActiveRecord
     {
         parent::init();
         $this->on(static::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
+        $this->on(static::EVENT_BEFORE_UPDATE, [$this, 'onBeforeSave']);
         $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterSave']);
         $this->on(static::EVENT_AFTER_UPDATE,  [$this, 'onAfterSave']);
     }
@@ -56,6 +60,23 @@ class Client extends \yii\db\ActiveRecord
         $seller = static::findOne(['username' => Yii::$app->params['user.seller']]);
         $this->login = $this->username ?: $this->email;
         $this->seller_id = $seller->id;
+        $this->onBeforeSave();
+    }
+
+    public function onBeforeSave()
+    {
+        if (!empty($this->state)) {
+            $this->state_id = new Expression($this->state==='ok'
+                ? "coalesce(state_id('client,ok'),state_id('client,active'))"
+                : "state_id('client,{$this->state}')"
+            );
+        }
+        if ($this->email_confirmed) {
+            $this->email = $this->email_confirmed;
+            $this->saveValue('contact:email_new', '');
+            $this->saveValue('contact:email_confirmed', $this->email_confirmed);
+            $this->saveValue('contact:email_confirm_date', new Expression('now()::text'));
+        }
     }
 
     public function onAfterSave()

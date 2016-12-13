@@ -23,6 +23,7 @@ class Identity extends \hiam\models\Identity
     public $roles;
     public $seller;
     public $seller_id;
+    public $email_confirmed;
 
     protected $activeStates = ['ok', 'active'];
 
@@ -44,5 +45,17 @@ class Identity extends \hiam\models\Identity
     public function isActive()
     {
         return in_array($this->state, $this->activeStates, true);
+    }
+
+    public function isEmailConfirmed()
+    {
+        return $this->isActive();
+    }
+
+    public function setEmailConfirmed($email)
+    {
+        $this->state = 'ok';
+        $this->email_confirmed = $email;
+        $this->save();
     }
 }
