@@ -65,6 +65,9 @@ class Client extends \yii\db\ActiveRecord
 
     public function onBeforeSave()
     {
+        if (empty($this->password)) {
+            unset($this->password);
+        }
         if (!empty($this->state)) {
             $this->state_id = new Expression($this->state==='ok'
                 ? "coalesce(state_id('client,ok'),state_id('client,active'))"
