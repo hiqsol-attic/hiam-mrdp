@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * HIAM module for MRDP database compatibility
  *
  * @link      https://github.com/hiqdev/hiam-mrdp

@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * HIAM module for MRDP database compatibility
  *
  * @link      https://github.com/hiqdev/hiam-mrdp
@@ -39,8 +38,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->leftJoin('value           t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
             ->leftJoin('value           i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
             ->leftJoin('value           l', "l.obj_id=c.obj_id AND l.prop_id=prop_id('login_ips:panel')")
-            ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id')
-        ;
+            ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id');
     }
 
     public function andWhere($condition)

@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * HIAM module for MRDP database compatibility
  *
  * @link      https://github.com/hiqdev/hiam-mrdp
@@ -69,7 +68,7 @@ class Client extends \yii\db\ActiveRecord
             unset($this->password);
         }
         if (!empty($this->state)) {
-            $this->state_id = new Expression($this->state==='ok'
+            $this->state_id = new Expression($this->state === 'ok'
                 ? "coalesce(state_id('client,ok'),state_id('client,active'))"
                 : "state_id('client,{$this->state}')"
             );
