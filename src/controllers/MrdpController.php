@@ -10,8 +10,10 @@
 
 namespace hiam\mrdp\controllers;
 
+use hiam\mrdp\exceptions\BadConfirmException;
 use Yii;
 use yii\helpers\Json;
+use yii\web\ForbiddenHttpException;
 
 /**
  * MRDP controller.
@@ -22,6 +24,7 @@ class MrdpController extends \yii\web\Controller
      * Implements login from MRDP panel.
      * @param $confirm_data confirmation data
      * @param $goto url to go to on success
+     * @throws ForbiddenHttpException when login confirmation is broken
      */
     public function actionLogin(array $confirm_data, $goto)
     {
@@ -34,7 +37,7 @@ class MrdpController extends \yii\web\Controller
         if (!empty($res['login']) && empty($res['_error'])) {
             $user = $this->user->findIdentity($res['login']);
         } else {
-            var_dump($res);die();
+            throw new ForbiddenHttpException('Bad confirmation', 0, new BadConfirmException($res));
         }
         if (!$user) {
             Yii::$app->session->setFlash('error', Yii::t('hiam', 'Failed login.'));
