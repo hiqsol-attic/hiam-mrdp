@@ -17,4 +17,9 @@ return [
             ],
         ],
     ],
+    'modules' => [
+        'mrdp' => [
+            'class' => \hiam\mrdp\Module::class,
+        ],
+    ],
 ];
