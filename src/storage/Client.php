@@ -36,10 +36,21 @@ class Client extends \yii\db\ActiveRecord
     public $allowed_ips;
     public $totp_secret;
 
+    public static function tableName()
+    {
+        return '{{zclient}}';
+    }
+
+    public static function primaryKey()
+    {
+        return ['obj_id'];
+    }
+
     public function rules()
     {
         return [
             [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
+            [['seller_id'], 'integer'],
             [['state'], 'trim'],
             [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
         ];
@@ -68,9 +79,8 @@ class Client extends \yii\db\ActiveRecord
             unset($this->password);
         }
         if (!empty($this->state)) {
-            $this->state_id = new Expression($this->state === 'ok'
-                ? "coalesce(state_id('client,ok'),state_id('client,active'))"
-                : "state_id('client,{$this->state}')"
+            $this->state_id = new Expression(
+                "zref_id('state,client,{$this->state}')"
             );
         }
         if ($this->email_confirmed) {
@@ -83,14 +93,28 @@ class Client extends \yii\db\ActiveRecord
 
     public function onAfterSave()
     {
-        $this->id = $this->id ?: $this->obj_id;
-        $this->type = $this->type ?: 'client';
+        $this->id = $this->id ?: $this->getAgain()->id;
+        $this->type = $this->type ?: $this->getAgain()->type;
+
         $contact = Contact::findOne($this->id);
         $contact->setAttributes($this->getAttributes($contact->safeAttributes()));
         $contact->save();
         $this->saveValue('client,access:totp_secret', $this->totp_secret);
         $this->saveValue('client,access:allowed_ips', $this->allowed_ips);
         $this->saveValue('login_ips:panel', $this->allowed_ips);
+    }
+
+    protected $_again;
+
+    public function getAgain()
+    {
+        /// XXX this crutch is needed bacause we use `zclient` view (not table)
+        /// XXX and yii ActiveRecord doesn't populate model properly in this case
+        if ($this->_again === null) {
+            $this->_again = static::find()->whereUsername($this->username)->one();
+        }
+
+        return $this->_again;
     }
 
     public function saveValue($prop, $value)
