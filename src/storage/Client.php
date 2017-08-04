@@ -36,6 +36,8 @@ class Client extends \yii\db\ActiveRecord
     public $allowed_ips;
     public $totp_secret;
 
+    public $password_auth_key;
+
     public static function tableName()
     {
         return '{{zclient}}';
@@ -144,5 +146,18 @@ class Client extends \yii\db\ActiveRecord
     public function getSeller_id()
     {
         return $this->reseller_id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        return $this->password_auth_key;
+    }
+
+    public function getAuth_key()
+    {
+        return $this->getAuthKey();
     }
 }

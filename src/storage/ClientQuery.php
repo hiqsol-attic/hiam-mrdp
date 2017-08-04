@@ -29,6 +29,7 @@ class ClientQuery extends \yii\db\ActiveQuery
                 't.value        AS totp_secret',
                 'coalesce(i.value,l.value) AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
+                'onetime_hash(c.password, c.obj_id::text) AS password_auth_key',
             ])
             ->from('zclient             c')
             ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')
@@ -71,7 +72,7 @@ class ClientQuery extends \yii\db\ActiveQuery
 
     public function whereUsername($username)
     {
-        $userId = (int) $username;
+        $userId = (int)$username;
         if ($userId > 0) {
             return $this->whereId($userId);
         }
@@ -92,6 +93,7 @@ class ClientQuery extends \yii\db\ActiveQuery
         if (is_null($is_active)) {
             return $this;
         }
+
         return parent::andWhere([$is_active ? 'in' : 'not in', 'z.name', ['ok', 'active']]);
     }
 }
