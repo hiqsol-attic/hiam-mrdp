@@ -46,7 +46,7 @@ class ClientQuery extends \yii\db\ActiveQuery
 
     public function andWhere($condition)
     {
-        if (!is_array($condition) || $condition[0]) {
+        if (!is_array($condition) || isset($condition[0])) {
             return parent::andWhere($condition);
         }
         foreach (['id', 'username', 'password', 'email', 'active'] as $key) {
