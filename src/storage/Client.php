@@ -89,7 +89,7 @@ class Client extends \yii\db\ActiveRecord
             $this->email = $this->email_confirmed;
             $this->saveValue('contact:email_new', '');
             $this->saveValue('contact:email_confirmed', $this->email_confirmed);
-            $this->saveValue('contact:email_confirm_date', new Expression('now()::text'));
+            $this->saveValue('contact:email_confirm_date', new Expression("date_trunc('second', now()::timestamp)::text"));
         }
     }
 
@@ -121,11 +121,17 @@ class Client extends \yii\db\ActiveRecord
 
     public function saveValue($prop, $value)
     {
-        self::getDb()->createCommand('SELECT set_value(:id,:prop,:value)', [
+        $params = [
             'id' => $this->id,
             'prop' => $prop,
             'value' => $value,
-        ])->execute();
+        ];
+        $sub = ':value';
+        if ($value instanceof Expression) {
+            $sub = (string)$value;
+            unset($params['value']);
+        }
+        self::getDb()->createCommand("SELECT set_value(:id,:prop,$sub)", $params)->execute();
     }
 
     public static function find()
