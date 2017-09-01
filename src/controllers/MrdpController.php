@@ -28,7 +28,7 @@ class MrdpController extends \yii\web\Controller
      */
     public function actionLogin(array $confirm_data, $goto)
     {
-        $url = 'https://hiapi.ahnames.com/verifyConfirmation?' . http_build_query([
+        $url = 'http://hiapi.ahnames.com/verifyConfirmation?' . http_build_query([
             'auth_ip'       => Yii::$app->request->getUserIp(),
             'what'          => 'redirect_hipanel',
             'confirm_data'  => $confirm_data,
