@@ -31,7 +31,7 @@ class ClientQuery extends \yii\db\ActiveQuery
                 't.value        AS totp_secret',
                 'coalesce(i.value,l.value) AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
-                'onetime_hash(c.password, c.obj_id::text) AS password_auth_key',
+                "encode(digest(c.password, 'sha1'), 'hex') AS password_hash",
             ])
             ->from('zclient             c')
             ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')

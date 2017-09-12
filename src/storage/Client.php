@@ -11,6 +11,7 @@
 namespace hiam\mrdp\storage;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Expression;
 
 /**
@@ -36,7 +37,7 @@ class Client extends \yii\db\ActiveRecord
     public $allowed_ips;
     public $totp_secret;
 
-    public $password_auth_key;
+    public $password_hash;
 
     public static function tableName()
     {
@@ -157,12 +158,12 @@ class Client extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getPasswordHash()
     {
-        return $this->password_auth_key;
+        return $this->password_hash;
     }
 
-    public function getAuth_key()
+    public function getPassword_hash()
     {
         return $this->getAuthKey();
     }
