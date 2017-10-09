@@ -50,13 +50,14 @@ class ClientQuery extends \yii\db\ActiveQuery
             return parent::andWhere($condition);
         }
         foreach (['id', 'username', 'password', 'email', 'active'] as $key) {
-            if (isset($condition[$key])) {
+            /// XXX `isset` does not fit here
+            if (array_key_exists($key, $condition)) {
                 $this->{"where$key"}($condition[$key]);
                 unset($condition[$key]);
             }
         }
         if (!empty($condition)) {
-            $this->andWhere($condition);
+            parent::andWhere($condition);
         }
 
         return $this;
