@@ -76,7 +76,7 @@ class ClientQuery extends \yii\db\ActiveQuery
     public function whereUsername($username)
     {
         $userId = (int)$username;
-        if ($userId > 0) {
+        if ($userId > 0 && "$userId" === trim($username)) {
             return $this->whereId($userId);
         }
 
