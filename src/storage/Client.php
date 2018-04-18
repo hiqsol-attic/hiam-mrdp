@@ -174,9 +174,8 @@ class Client extends \yii\db\ActiveRecord
             return [];
         }
 
-        $result = [];
         foreach ($condition as $key => $item) {
-            $result[$key] = self::filterCondition($item);
+            $result[$key] = is_array($item) ? self::filterCondition($item) : $item;
         }
 
         return $result;
