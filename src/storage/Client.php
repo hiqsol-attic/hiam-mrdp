@@ -167,4 +167,18 @@ class Client extends \yii\db\ActiveRecord
     {
         return $this->getAuthKey();
     }
+
+    protected static function filterCondition(array $condition)
+    {
+        if (empty($condition)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($condition as $key => $item) {
+            $result[$key] = self::filterCondition($item);
+        }
+
+        return $result;
+    }
 }
