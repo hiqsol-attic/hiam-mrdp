@@ -171,14 +171,7 @@ class Client extends \yii\db\ActiveRecord
 
     protected static function filterCondition(array $condition)
     {
-        if (empty($condition)) {
-            return [];
-        }
-
-        foreach ($condition as $key => $item) {
-            $result[$key] = is_array($item) ? array_values($item) : $item;
-        }
-
-        return $result;
+        /// XXX skip condition filtering
+        return $condition;
     }
 }
