@@ -53,6 +53,7 @@ class Client extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
+            [['username', 'email'], 'filter', 'filter' => 'strtolower'],
             [['seller_id'], 'integer'],
             [['state'], 'trim'],
             [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
@@ -166,5 +167,18 @@ class Client extends \yii\db\ActiveRecord
     public function getPassword_hash()
     {
         return $this->getAuthKey();
+    }
+
+    protected static function filterCondition(array $condition)
+    {
+        if (empty($condition)) {
+            return [];
+        }
+
+        foreach ($condition as $key => $item) {
+            $result[$key] = is_array($item) ? array_values($item) : $item;
+        }
+
+        return $result;
     }
 }
