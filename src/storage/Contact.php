@@ -30,6 +30,7 @@ class Contact extends \yii\db\ActiveRecord
             [['first_name', 'last_name'], 'string', 'min' => 2, 'max' => 64],
 
             ['email', 'trim'],
+            ['email', 'filter', 'filter' => 'strtolower'],
             ['email', 'email'],
         ];
     }
