@@ -44,10 +44,10 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id');
     }
 
-    public function andWhere($condition)
+    public function andWhere($condition, $params = [])
     {
         if (!is_array($condition) || isset($condition[0])) {
-            return parent::andWhere($condition);
+            return parent::andWhere($condition, $params);
         }
         foreach (['id', 'username', 'password', 'email', 'active'] as $key) {
             /// XXX `isset` does not fit here
@@ -57,7 +57,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             }
         }
         if (!empty($condition)) {
-            parent::andWhere($condition);
+            parent::andWhere($condition, $params);
         }
 
         return $this;
