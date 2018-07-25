@@ -36,7 +36,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->from('zclient             c')
             ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')
             ->innerJoin('zref           y', 'y.obj_id=c.type_id')
-            ->innerJoin('zref           z', "z.obj_id=c.state_id AND z.name IN ('ok', 'new')")
+            ->innerJoin('zref           z', "z.obj_id=c.state_id")
             ->leftJoin('contact         k', 'k.obj_id=c.obj_id')
             ->leftJoin('value           t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
             ->leftJoin('value           i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
@@ -81,13 +81,14 @@ class ClientQuery extends \yii\db\ActiveQuery
         }
 
         return parent::andWhere([
-                'or',
-                    ['or', 'c.login=:username', 'c.email=:username'],
-                    ['and',
-                        'k.email = :username',
-                        'cc.count = 1'
-                    ]
-            ], [':username' => $username])
+            'or',
+            ['or', 'c.login=:username', 'c.email=:username'],
+            [
+                'and',
+                'k.email = :username',
+                'cc.count = 1'
+            ]
+        ], [':username' => $username])
             ->leftJoin([
                 'cc' => (new Query())->select(['email', 'count(*)'])->from('zcontact')->groupBy('email')
             ], 'cc.email = k.email');
