@@ -49,7 +49,7 @@ class EmailConfirm extends Model
     public function rules()
     {
         return [
-            [['id', 'client', 'email', 'what'], 'required'],
+            [['id', 'client', 'email', 'what', 'salt', 'hash'], 'required'],
             [['email'], 'email'],
             [['client', 'what', 'salt', 'hash'], 'string'],
             ['what', 'in', 'range' => ['clientConfirmEmail', 'contactConfirmEmail']],
