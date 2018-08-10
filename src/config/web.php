@@ -16,10 +16,30 @@ return [
                 'identity'   => \hiam\mrdp\storage\Client::class,
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'hiam.mrdp' => [
+                    'class' => \yii\i18n\PhpMessageSource::class,
+                    'basePath' => '@hiam/mrdp/messages',
+                ],
+            ],
+        ],
+        'urlManager' => [
+            'rules' => [
+                'registration/confirm' => 'mrdp/registration/confirm',
+            ],
+        ],
     ],
     'modules' => [
         'mrdp' => [
             'class' => \hiam\mrdp\Module::class,
+        ],
+        'debug' => [
+            'panels' => [
+                'httpclient' => [
+                    'class' => \yii\httpclient\debug\HttpClientPanel::class,
+                ],
+            ],
         ],
     ],
 ];
