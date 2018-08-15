@@ -18,7 +18,7 @@ return [
         ],
         'urlManager' => [
             'rules' => [
-                'registration/confirm' => 'mrdp/registration/confirm',
+                'registration/<action>' => 'mrdp/registration/<action>',
             ],
         ],
     ],

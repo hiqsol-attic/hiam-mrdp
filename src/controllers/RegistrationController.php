@@ -2,19 +2,26 @@
 
 namespace hiam\mrdp\controllers;
 
-use hiam\mrdp\models\EmailConfirm;
+use hiam\actions\ConfirmEmail;
 use yii\web\Controller;
-use Yii;
 
 class RegistrationController extends Controller
 {
-    public function actionConfirm()
+    public function actions()
     {
-        $model = new EmailConfirm();
-        $model->load(Yii::$app->request->get(), '');
-        $result = $model->confirm();
-
-        return $this->render('confirm', compact('result'));
-
+        return [
+            'client-confirm-email' => [
+                'class' => ConfirmEmail::class,
+                'actionAttributeName' => 'what',
+                'actionAttributeValue' => 'clientConfirmEmail',
+                'usernameAttributeName' => 'client',
+            ],
+            'contact-confirm-email' => [
+                'class' => ConfirmEmail::class,
+                'actionAttributeName' => 'what',
+                'actionAttributeValue' => 'contactConfirmEmail',
+                'usernameAttributeName' => 'client',
+            ],
+        ];
     }
 }
