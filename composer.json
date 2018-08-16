@@ -48,7 +48,8 @@
     },
     "autoload": {
         "psr-4": {
-            "hiam\\mrdp\\": "src"
+            "hiam\\mrdp\\": "src",
+            "hiam\\mrdp\\tests\\": "tests"
         }
     },
     "extra": {
