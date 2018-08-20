@@ -16,10 +16,22 @@ return [
                 'identity'   => \hiam\mrdp\storage\Client::class,
             ],
         ],
+        'urlManager' => [
+            'rules' => [
+                'registration/<action>' => 'mrdp/registration/<action>',
+            ],
+        ],
     ],
     'modules' => [
         'mrdp' => [
             'class' => \hiam\mrdp\Module::class,
+        ],
+        'debug' => [
+            'panels' => [
+                'httpclient' => [
+                    'class' => \yii\httpclient\debug\HttpClientPanel::class,
+                ],
+            ],
         ],
     ],
 ];
