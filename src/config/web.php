@@ -34,4 +34,9 @@ return [
             ],
         ],
     ],
+    'container' => [
+        'singletons' => [
+            \hiam\providers\ClaimsProviderInterface::class => \hiam\mrdp\providers\ClaimsProvider::class
+        ]
+    ]
 ];
