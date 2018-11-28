@@ -38,17 +38,18 @@ class Identity extends \hiam\models\Identity
             ['seller',          'string', 'min' => 2, 'max' => 64],
 
             ['roles',           'trim'],
+            ['email_confirmed', 'email'],
         ]);
     }
 
     public function isActive()
     {
-        return in_array($this->state, $this->activeStates, true);
+        return \in_array($this->state, $this->activeStates, true);
     }
 
     public function isEmailConfirmed()
     {
-        return $this->isActive();
+        return !empty($this->email_confirmed);
     }
 
     public function setEmailConfirmed($email)

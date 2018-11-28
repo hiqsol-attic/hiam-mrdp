@@ -32,16 +32,19 @@ class ClientQuery extends \yii\db\ActiveQuery
                 'coalesce(i.value,l.value) AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
                 "encode(digest(c.password, 'sha1'), 'hex') AS password_hash",
+                'o.value        AS email_confirmed'
             ])
             ->from('zclient             c')
             ->innerJoin('zclient        r', 'r.obj_id=c.seller_id')
             ->innerJoin('zref           y', 'y.obj_id=c.type_id')
-            ->innerJoin('zref           z', "z.obj_id=c.state_id")
+            ->innerJoin('zref           z', 'z.obj_id=c.state_id')
             ->leftJoin('contact         k', 'k.obj_id=c.obj_id')
             ->leftJoin('value           t', "t.obj_id=c.obj_id AND t.prop_id=prop_id('client,access:totp_secret')")
             ->leftJoin('value           i', "i.obj_id=c.obj_id AND i.prop_id=prop_id('client,access:allowed_ips')")
             ->leftJoin('value           l', "l.obj_id=c.obj_id AND l.prop_id=prop_id('login_ips:panel')")
-            ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id');
+            ->leftJoin('value           o', "o.obj_id=c.obj_id AND o.prop_id=prop_id('contact:email_confirmed')")
+            ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id')
+            ->andWhere(['not in', 'z.name', ['blocked', 'deleted', 'wiped']]);
     }
 
     public function andWhere($condition, $params = [])
