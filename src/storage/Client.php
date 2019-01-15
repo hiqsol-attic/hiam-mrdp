@@ -106,6 +106,9 @@ class Client extends \yii\db\ActiveRecord
         $this->saveValue('client,access:totp_secret', $this->totp_secret);
         $this->saveValue('client,access:allowed_ips', $this->allowed_ips);
         $this->saveValue('login_ips:panel', $this->allowed_ips);
+
+        $this->saveValue('contact:policy_consent', 1);
+        $this->saveValue('contact:gdpr_consent', 1);
     }
 
     protected $_again;
