@@ -172,7 +172,7 @@ class Client extends \yii\db\ActiveRecord
         return $this->getAuthKey();
     }
 
-    protected static function filterCondition(array $condition)
+    protected static function filterCondition(array $condition, array $aliases = [])
     {
         /// XXX skip condition filtering
         return $condition;
