@@ -12,6 +12,7 @@ namespace hiam\mrdp\storage;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\db\Exception;
 use yii\db\Expression;
 
 /**
@@ -170,6 +171,27 @@ class Client extends \yii\db\ActiveRecord
     public function getPassword_hash()
     {
         return $this->getAuthKey();
+    }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function updateEmail(string $email): bool
+    {
+        if ($this->username) {
+            try {
+                if (Yii::$app->db->createCommand()
+                    ->update('zclient', ['email' => $email], 'login = :login')
+                    ->bindValue(':login', $this->username)
+                    ->execute()) {
+                    return true;
+                }
+            } catch (Exception $e) {
+            }
+        }
+
+        return false;
     }
 
     protected static function filterCondition(array $condition, array $aliases = [])
