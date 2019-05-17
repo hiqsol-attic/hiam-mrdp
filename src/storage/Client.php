@@ -181,7 +181,10 @@ class Client extends \yii\db\ActiveRecord
     {
         if ($this->username) {
             try {
-                if (Yii::$app->db->createCommand()->update('zclient', ['email' => $email], 'login = :login')->bindValue(':login', $this->username)->execute()) {
+                if (Yii::$app->db->createCommand()
+                    ->update('zclient', ['email' => $email], 'login = :login')
+                    ->bindValue(':login', $this->username)
+                    ->execute()) {
                     return true;
                 }
             } catch (Exception $e) {
