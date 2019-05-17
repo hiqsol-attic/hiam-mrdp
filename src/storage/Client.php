@@ -179,11 +179,13 @@ class Client extends \yii\db\ActiveRecord
      */
     public function updateEmail(string $email): bool
     {
-        try {
-            if (Yii::$app->db->createCommand()->update('zclient', ['email' => $email], 'login = :login')->bindValue(':login', $this->username)->execute()) {
-                return true;
+        if ($this->username) {
+            try {
+                if (Yii::$app->db->createCommand()->update('zclient', ['email' => $email], 'login = :login')->bindValue(':login', $this->username)->execute()) {
+                    return true;
+                }
+            } catch (Exception $e) {
             }
-        } catch (Exception $e) {
         }
 
         return false;
