@@ -44,7 +44,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             ->leftJoin('value           l', "l.obj_id=c.obj_id AND l.prop_id=prop_id('login_ips:panel')")
             ->leftJoin('value           o', "o.obj_id=c.obj_id AND o.prop_id=prop_id('contact:email_confirmed')")
             ->leftJoin('client2rolez    e', 'e.client_id=c.obj_id')
-            ->andWhere(['not in', 'z.name', ['blocked', 'deleted', 'wiped']]);
+            ->andWhere(['in', 'z.name', ['ok', 'new']]);
     }
 
     public function andWhere($condition, $params = [])
