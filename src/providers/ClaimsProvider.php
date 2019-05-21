@@ -39,6 +39,9 @@ class ClaimsProvider implements ClaimsProviderInterface
             'email' => function (Identity $identity) {
                 return ['email' => $identity->email];
             },
+            'roles' => function (Identity $identity) {
+                return ['roles' => $identity->roles];
+            },
         ];
     }
 }
