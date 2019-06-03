@@ -89,7 +89,10 @@ class Client extends \yii\db\ActiveRecord
             );
         }
         if ($this->email_confirmed) {
-            $this->email = $this->email_confirmed;
+            $double = static::findOne([ 'email' => $this->email_confirmed ]);
+            if (empty($double) || $this->obj_id === $double->obj_id) {
+                $this->email = $this->email_confirmed;
+            }
             $this->saveValue('contact:email_new', '');
             $this->saveValue('contact:email_confirmed', $this->email_confirmed);
             $this->saveValue('contact:email_confirm_date', new Expression("date_trunc('second', now()::timestamp)::text"));
