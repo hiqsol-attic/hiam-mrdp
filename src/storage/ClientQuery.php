@@ -83,18 +83,7 @@ class ClientQuery extends \yii\db\ActiveQuery
             return $this->whereId($userId);
         }
 
-        return parent::andWhere([
-            'or',
-            ['or', 'c.login=:username', 'c.email=:username'],
-            [
-                'and',
-                'k.email = :username',
-                'cc.count = 1'
-            ]
-        ], [':username' => $username])
-            ->leftJoin([
-                'cc' => (new Query())->select(['email', 'count(*)'])->from('zcontact')->groupBy('email')
-            ], 'cc.email = k.email');
+        return parent::andWhere(['or', 'c.login=:username', 'c.email=:username'], [':username' => $username]);
     }
 
     public function wherePassword($password)
