@@ -30,17 +30,21 @@ class ClaimsProvider implements ClaimsProviderInterface
                 return ArrayHelper::toArray($identity, [
                     Identity::class => [
                         'name' => function ($model) {
-                            return "{$model->first_name} {$model->last_name}";
+                            return trim("{$model->first_name} {$model->last_name}");
                         },
-                        'username',
-                    ]
+                        'username', 'email', 'email_confirmed',
+                    ],
                 ]);
             },
             'email' => function (Identity $identity) {
-                return ['email' => $identity->email];
+                return ArrayHelper::toArray($identity, [
+                    Identity::class => ['email', 'email_confirmed'],
+                ]);
             },
             'roles' => function (Identity $identity) {
-                return ['roles' => $identity->roles];
+                return ArrayHelper::toArray($identity, [
+                    Identity::class => ['roles'],
+                ]);
             },
         ];
     }
