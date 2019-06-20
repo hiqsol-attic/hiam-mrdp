@@ -38,6 +38,7 @@ return [
         'singletons' => [
             \hiam\providers\ClaimsProviderInterface::class => \hiam\mrdp\providers\ClaimsProvider::class,
             \hiam\validators\PasswordValidatorInterface::class => \hiam\mrdp\validators\PasswordValidator::class,
+            \hiam\validators\LoginValidatorInterface::class => \hiam\mrdp\validators\LoginValidator::class,
         ]
     ]
 ];
