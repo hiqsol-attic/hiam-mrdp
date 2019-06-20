@@ -3,8 +3,9 @@
 namespace hiam\mrdp\validators;
 
 use hiam\validators\LoginValidatorInterface;
-use yii\validators\Validator;
 use Yii;
+use yii\base\Model;
+use yii\validators\Validator;
 
 class LoginValidator extends Validator implements LoginValidatorInterface
 {
@@ -44,5 +45,12 @@ class LoginValidator extends Validator implements LoginValidatorInterface
                 $this->addError($model, $attribute, $this->message);
             }
         }
+    }
+
+    public function inlineFor(Model $model): \Closure
+    {
+        return function (string $attribute) use ($model) {
+            $this->validateAttribute($model, $attribute);
+        };
     }
 }
