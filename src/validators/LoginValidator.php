@@ -6,6 +6,7 @@ use hiam\validators\LoginValidatorInterface;
 use Yii;
 use yii\base\Model;
 use yii\validators\Validator;
+use hiam\mrdp\storage\Client;
 
 class LoginValidator extends Validator implements LoginValidatorInterface
 {
@@ -33,15 +34,11 @@ class LoginValidator extends Validator implements LoginValidatorInterface
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($model->{$this->loginAttribute}) {
-            $valid = Yii::$app->db->createCommand("
-                    SELECT      zc.obj_id
-                    FROM        zclient zc
-                    WHERE       zc.state_id = ANY(state_ids('client', 'ok,active,new'))
-                                AND NOT check_password('', zc.password)
-                                AND login = :login
-                ")->bindValues([':login' => $model->{$this->loginAttribute}])->queryScalar();
-            if (!$valid) {
+        if (!empty($model->{$this->loginAttribute})) {
+            $found = Client::find()->andWhere([
+                'username' => $model->{$this->loginAttribute},
+            ])->one();
+            if (!$found) {
                 $this->addError($model, $attribute, $this->message);
             }
         }

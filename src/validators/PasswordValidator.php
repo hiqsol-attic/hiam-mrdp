@@ -6,6 +6,7 @@ use hiam\validators\PasswordValidatorInterface;
 use Yii;
 use yii\base\Model;
 use yii\validators\Validator;
+use hiam\mrdp\storage\Client;
 
 class PasswordValidator extends Validator implements PasswordValidatorInterface
 {
@@ -33,15 +34,12 @@ class PasswordValidator extends Validator implements PasswordValidatorInterface
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($model->{$this->loginAttribute} && $model->{$this->passwordAttribute}) {
-            $valid = Yii::$app->db->createCommand("
-                    SELECT      zc.obj_id
-                    FROM        zclient zc
-                    WHERE       zc.state_id = ANY(state_ids('client', 'ok,active,new'))
-                                AND NOT check_password('', zc.password)
-                                AND login = :login AND check_password(:password, zc.password)
-                ")->bindValues([':login' => $model->{$this->loginAttribute}, ':password' => $model->{$this->passwordAttribute}])->queryScalar();
-            if (!$valid) {
+        if (!empty($model->{$this->loginAttribute}) && !empty($model->{$this->passwordAttribute})) {
+            $found = Client::find()->andWhere([
+                'username' => $model->{$this->loginAttribute},
+                'password' => $model->{$this->passwordAttribute},
+            ])->one();
+            if (!$found) {
                 $this->addError($model, $attribute, $this->message);
             }
         }
