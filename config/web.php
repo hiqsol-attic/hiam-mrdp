@@ -9,6 +9,10 @@
  */
 
 return [
+    'aliases' => [
+        '@runtime/var'      => $params['hiapi.var_dir'],
+        '@runtime/tokens'   => '@runtime/var/tokens',
+    ],
     'components' => [
         'user' => [
             'identityClass'   => \hiam\mrdp\models\Identity::class,

@@ -12,4 +12,6 @@ return [
     'hipanel.site'  => null,
     'hiapi.site'    => null,
     'hiam.site'     => null,
+
+    'hiapi.var_dir' => dirname(__DIR__, 4) . '/../HIAPI_VAR',
 ];
