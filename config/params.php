@@ -12,5 +12,4 @@ return [
     'hipanel.site'  => null,
     'hiapi.site'    => null,
     'hiam.site'     => null,
-    'hiam.site'     => null,
 ];
