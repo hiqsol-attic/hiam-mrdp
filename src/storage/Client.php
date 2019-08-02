@@ -33,6 +33,7 @@ class Client extends \yii\db\ActiveRecord
     public $username;
     public $last_name;
     public $first_name;
+    public $send_me_news;
 
     public $email_confirmed;
     public $allowed_ips;
@@ -58,6 +59,7 @@ class Client extends \yii\db\ActiveRecord
             [['seller_id'], 'integer'],
             [['state'], 'trim'],
             [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
+            ['send_me_news', 'boolean'],
         ];
     }
 
@@ -103,6 +105,7 @@ class Client extends \yii\db\ActiveRecord
     {
         $this->id = $this->id ?: $this->getAgain()->id;
         $this->type = $this->type ?: $this->getAgain()->type;
+        $send_news = $this->send_me_news === '0' ? '' : 1;
 
         $contact = Contact::findOne($this->id);
         $contact->setAttributes($this->getAttributes($contact->safeAttributes()));
@@ -113,6 +116,8 @@ class Client extends \yii\db\ActiveRecord
 
         $this->saveValue('contact:policy_consent', 1);
         $this->saveValue('contact:gdpr_consent', 1);
+        $this->saveValue('client,mailing:commercial', $send_news);
+        $this->saveValue('client,mailing:newsletters', $send_news);
     }
 
     protected $_again;
