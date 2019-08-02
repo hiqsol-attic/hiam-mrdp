@@ -23,6 +23,7 @@ class Identity extends \hiam\models\Identity
     public $seller;
     public $seller_id;
     public $email_confirmed;
+    public $send_me_news;
 
     protected $activeStates = ['ok', 'active'];
 
@@ -39,6 +40,7 @@ class Identity extends \hiam\models\Identity
 
             ['roles',           'trim'],
             ['email_confirmed', 'email'],
+            ['send_me_news',    'boolean'],
         ]);
     }
 
