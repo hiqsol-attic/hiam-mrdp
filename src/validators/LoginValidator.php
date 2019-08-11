@@ -26,7 +26,7 @@ class LoginValidator extends Validator implements LoginValidatorInterface
         if ($this->message !== null) {
             return;
         }
-        $this->message = Yii::t('hiam', 'Incorrect username');
+        $this->message = Yii::t('hiam', 'Incorrect login');
     }
 
     /**
