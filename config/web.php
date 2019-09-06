@@ -19,11 +19,6 @@ return [
             'storageClasses'  => [
                 'identity'   => \hiam\mrdp\storage\Client::class,
             ],
-            'on beforeLogout' => function (\yii\web\UserEvent $userEvent) {
-                /** @var \hiam\components\TokenRevokerInterface $revoker */
-                $revoker = Yii::$container->get(\hiam\components\TokenRevokerInterface::class);
-                $revoker->revokeAllUserTokens($userEvent->identity->getId(), null);
-            },
         ],
         'urlManager' => [
             'rules' => [
