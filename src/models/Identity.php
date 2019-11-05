@@ -23,6 +23,7 @@ class Identity extends \hiam\models\Identity
     public $seller;
     public $seller_id;
     public $email_confirmed;
+    public $email_new;
     public $send_me_news;
 
     protected $activeStates = ['ok', 'active'];
@@ -54,9 +55,17 @@ class Identity extends \hiam\models\Identity
         return !empty($this->email_confirmed);
     }
 
-    public function setEmailConfirmed($email)
+    public function setNewUnconfirmedEmail(string $newEmail): bool
+    {
+        $this->email_new = $newEmail;
+
+        return true;
+    }
+
+    public function setConfirmedEmail(string $email)
     {
         $this->state = 'ok';
+        $this->email = $email;
         $this->email_confirmed = $email;
         $this->save();
     }

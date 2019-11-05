@@ -36,6 +36,7 @@ class Client extends \yii\db\ActiveRecord
     public $send_me_news;
 
     public $email_confirmed;
+    public $email_new;
     public $allowed_ips;
     public $totp_secret;
 
@@ -54,7 +55,7 @@ class Client extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'email', 'password', 'first_name', 'last_name'], 'trim'],
+            [['username', 'email', 'password', 'first_name', 'last_name', 'email_new'], 'trim'],
             [['username', 'email'], 'filter', 'filter' => 'strtolower'],
             [['seller_id'], 'integer'],
             [['state'], 'trim'],
@@ -86,18 +87,21 @@ class Client extends \yii\db\ActiveRecord
             unset($this->password);
         }
         if (!empty($this->state)) {
-            $this->state_id = new Expression(
-                "zref_id('state,client,{$this->state}')"
-            );
+            $this->state_id = new Expression("zref_id('state,client,{$this->state}')");
         }
-        if ($this->email_confirmed) {
-            $double = static::findOne([ 'email' => $this->email_confirmed ]);
+
+        // If email or confirmed email got changed
+        if (!empty($this->email_confirmed) && !empty($this->getDirtyAttributes(['email_confirmed', 'email']))) {
+            $double = static::findOne(['email' => $this->email_confirmed]);
             if (empty($double) || $this->obj_id === $double->obj_id) {
                 $this->email = $this->email_confirmed;
             }
             $this->saveValue('contact:email_new', '');
             $this->saveValue('contact:email_confirmed', $this->email_confirmed);
             $this->saveValue('contact:email_confirm_date', new Expression("date_trunc('second', now()::timestamp)::text"));
+        }
+        if (!empty($this->email_new)) {
+            $this->saveValue('contact:email_new', $this->email_new);
         }
     }
 
