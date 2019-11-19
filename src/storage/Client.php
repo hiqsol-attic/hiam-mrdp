@@ -122,6 +122,17 @@ class Client extends \yii\db\ActiveRecord
         $this->saveValue('contact:gdpr_consent', 1);
         $this->saveValue('client,mailing:commercial', $send_news);
         $this->saveValue('client,mailing:newsletters', $send_news);
+
+        $this->saveAnaliticsData();
+    }
+
+    private function saveAnaliticsData(): void
+    {
+        $utm = Yii::$app->session->get('utm_');
+        if (empty($utm)) {
+            return;
+        }
+        $this->saveValue('client,registration:referer', $utm);
     }
 
     protected $_again;
