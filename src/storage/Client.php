@@ -128,11 +128,12 @@ class Client extends \yii\db\ActiveRecord
 
     private function saveAnaliticsData(): void
     {
-        $utm = Yii::$app->session->get('utm_');
-        if (empty($utm)) {
+        $utm_params = Yii::$app->session->get('utm_params');
+        if (empty($utm_params['atid'])) {
             return;
         }
-        $this->saveValue('client,registration:referer', $utm);
+        $this->saveValue('client,registration:referer', $utm_params['atid']);
+        $this->saveValue('client,registration:utm_tags', $utm_params['params']);
     }
 
     protected $_again;
