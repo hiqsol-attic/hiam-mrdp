@@ -90,8 +90,7 @@ class Client extends \yii\db\ActiveRecord
             $this->state_id = new Expression("zref_id('state,client,{$this->state}')");
         }
 
-        // If email or confirmed email got changed
-        if (!empty($this->email_confirmed) && !empty($this->getDirtyAttributes(['email_confirmed', 'email']))) {
+        if ($this->isEmailConfirmAction()) {
             $double = static::findOne(['email' => $this->email_confirmed]);
             if (empty($double) || $this->obj_id === $double->obj_id) {
                 $this->email = $this->email_confirmed;
@@ -103,6 +102,13 @@ class Client extends \yii\db\ActiveRecord
         if (!empty($this->email_new)) {
             $this->saveValue('contact:email_new', $this->email_new);
         }
+    }
+
+    private function isEmailConfirmAction()
+    {
+        $currentConfirmedEmail = $this->readValue('contact:email_confirmed');
+
+        return !empty($this->email_confirmed) && ($currentConfirmedEmail !== $this->email_confirmed);
     }
 
     public function onAfterSave()
@@ -135,6 +141,15 @@ class Client extends \yii\db\ActiveRecord
         }
 
         return $this->_again;
+    }
+
+    private function readValue(string $prop)
+    {
+        $params = [
+            'id' => $this->id,
+            'prop' => $prop,
+        ];
+        return self::getDb()->createCommand("SELECT get_value(:id,:prop)", $params)->queryScalar();
     }
 
     public function saveValue($prop, $value)
