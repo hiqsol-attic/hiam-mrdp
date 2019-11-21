@@ -104,7 +104,7 @@ class Client extends \yii\db\ActiveRecord
         }
     }
 
-    private function isEmailConfirmAction()
+    private function isEmailConfirmAction(): bool
     {
         $currentConfirmedEmail = $this->readValue('contact:email_confirmed');
 
