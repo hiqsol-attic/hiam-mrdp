@@ -39,6 +39,7 @@ class Client extends \yii\db\ActiveRecord
     public $email_new;
     public $allowed_ips;
     public $totp_secret;
+    public $referralParams;
 
     public $password_hash;
 
@@ -61,6 +62,7 @@ class Client extends \yii\db\ActiveRecord
             [['state'], 'trim'],
             [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
             ['send_me_news', 'boolean'],
+            ['referralParams', 'safe']
         ];
     }
 
@@ -123,17 +125,17 @@ class Client extends \yii\db\ActiveRecord
         $this->saveValue('client,mailing:commercial', $send_news);
         $this->saveValue('client,mailing:newsletters', $send_news);
 
-        $this->saveAnaliticsData();
+        $this->saveAnalyticsData();
     }
 
-    private function saveAnaliticsData(): void
+    private function saveAnalyticsData(): void
     {
-        $utm_params = Yii::$app->session->get('utm_params');
-        if (empty($utm_params['atid'])) {
-            return;
+        $referralParams = $this->referralParams;
+        foreach (['referer', 'utm_tags'] as $key) {
+            if (!empty($referralParams[$key])) {
+                $this->saveValue("client,registration:$key", $referralParams[$key]);
+            }
         }
-        $this->saveValue('client,registration:referer', $utm_params['atid']);
-        $this->saveValue('client,registration:utm_tags', $utm_params['params']);
     }
 
     protected $_again;
