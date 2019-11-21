@@ -143,7 +143,7 @@ class Client extends \yii\db\ActiveRecord
         return $this->_again;
     }
 
-    private function readValue(string $prop)
+    private function readValue(string $prop): string
     {
         $params = [
             'id' => $this->id,
