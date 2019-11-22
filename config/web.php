@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2016, HiQDev (http://hiqdev.com/)
  */
 
+use hiam\behaviors\SaveReferralParams;
+use hiam\mrdp\models\Identity;
+
 return [
     'aliases' => [
         '@runtime/var'      => $params['hiapi.var_dir'],
@@ -43,6 +46,11 @@ return [
             \hiam\providers\ClaimsProviderInterface::class => \hiam\mrdp\providers\ClaimsProvider::class,
             \hiam\validators\PasswordValidatorInterface::class => \hiam\mrdp\validators\PasswordValidator::class,
             \hiam\validators\LoginValidatorInterface::class => \hiam\mrdp\validators\LoginValidator::class,
+        ],
+        'definitions' => [
+            Identity::class => [
+                'as saveReferralParams' => SaveReferralParams::class,
+            ],
         ],
     ],
 ];

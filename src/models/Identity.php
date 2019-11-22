@@ -31,15 +31,6 @@ class Identity extends \hiam\models\Identity
 
     protected $activeStates = ['ok', 'active'];
 
-    public function behaviors()
-    {
-        return array_merge(parent::behaviors(), [
-            'save-referral-params' => [
-                'class' => SaveReferralParams::class,
-            ],
-        ]);
-    }
-
     /**
      * {@inheritdoc}
      */
