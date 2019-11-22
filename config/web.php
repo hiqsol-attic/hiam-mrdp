@@ -8,10 +8,8 @@
  * @copyright Copyright (c) 2016, HiQDev (http://hiqdev.com/)
  */
 
-use hiam\behaviors\SaveReferralParams;
-use hiam\mrdp\models\Identity;
-
 return [
+    'as saveReferralParams' => \hiam\mrdp\behaviors\SaveReferralParams::class,
     'aliases' => [
         '@runtime/var'      => $params['hiapi.var_dir'],
         '@runtime/tokens'   => '@runtime/var/tokens',
@@ -48,8 +46,8 @@ return [
             \hiam\validators\LoginValidatorInterface::class => \hiam\mrdp\validators\LoginValidator::class,
         ],
         'definitions' => [
-            Identity::class => [
-                'as saveReferralParams' => SaveReferralParams::class,
+            \hiam\mrdp\models\Identity::class => [
+                'as saveReferralParams' => \hiam\mrdp\behaviors\SaveReferralParams::class,
             ],
         ],
     ],
