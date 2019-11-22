@@ -14,6 +14,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\helpers\Json;
 
 /**
  * Client model.
@@ -125,16 +126,16 @@ class Client extends \yii\db\ActiveRecord
         $this->saveValue('client,mailing:commercial', $send_news);
         $this->saveValue('client,mailing:newsletters', $send_news);
 
-        $this->saveAnalyticsData();
+        $this->saveReferralParams();
     }
 
-    private function saveAnalyticsData(): void
+    private function saveReferralParams(): void
     {
-        $referralParams = $this->referralParams;
-        foreach (['referer', 'utm_tags'] as $key) {
-            if (!empty($referralParams[$key])) {
-                $this->saveValue("client,registration:$key", $referralParams[$key]);
-            }
+        if (!empty($this->referralParams['referer'])) {
+            $this->saveValue("client,registration:referer", $this->referralParams['referer']);
+        }
+        if (!empty($this->referralParams['utmTags'])) {
+            $this->saveValue("client,registration:utm_tags", Json::htmlEncode($this->referralParams['utm_tags']));
         }
     }
 
