@@ -11,7 +11,6 @@
 namespace hiam\mrdp\storage;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\helpers\Json;
@@ -72,7 +71,7 @@ class Client extends \yii\db\ActiveRecord
         parent::init();
         $this->on(static::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
         $this->on(static::EVENT_BEFORE_UPDATE, [$this, 'onBeforeSave']);
-        $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterSave']);
+        $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterInsert']);
         $this->on(static::EVENT_AFTER_UPDATE,  [$this, 'onAfterSave']);
     }
 
@@ -105,6 +104,12 @@ class Client extends \yii\db\ActiveRecord
         if (!empty($this->email_new)) {
             $this->saveValue('contact:email_new', $this->email_new);
         }
+    }
+
+    public function onAfterInsert()
+    {
+        $this->onAfterSave();
+        $this->saveReferralParams();
     }
 
     private function isEmailConfirmAction(): bool
@@ -141,7 +146,7 @@ class Client extends \yii\db\ActiveRecord
             $this->saveValue("client,registration:referer", $this->referralParams['referer']);
         }
         if (!empty($this->referralParams['utmTags'])) {
-            $this->saveValue("client,registration:utm_tags", Json::htmlEncode($this->referralParams['utm_tags']));
+            $this->saveValue("client,registration:utm_tags", Json::encode($this->referralParams['utmTags']));
         }
     }
 
@@ -158,7 +163,7 @@ class Client extends \yii\db\ActiveRecord
         return $this->_again;
     }
 
-    private function readValue(string $prop): string
+    private function readValue(string $prop): ?string
     {
         $params = [
             'id' => $this->id,
