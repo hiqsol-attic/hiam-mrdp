@@ -11,9 +11,9 @@
 namespace hiam\mrdp\storage;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\helpers\Json;
 
 /**
  * Client model.
@@ -39,6 +39,7 @@ class Client extends \yii\db\ActiveRecord
     public $email_new;
     public $allowed_ips;
     public $totp_secret;
+    public $referralParams;
 
     public $password_hash;
 
@@ -61,6 +62,7 @@ class Client extends \yii\db\ActiveRecord
             [['state'], 'trim'],
             [['email_confirmed', 'allowed_ips', 'totp_secret'], 'trim'],
             ['send_me_news', 'boolean'],
+            ['referralParams', 'safe']
         ];
     }
 
@@ -69,7 +71,7 @@ class Client extends \yii\db\ActiveRecord
         parent::init();
         $this->on(static::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
         $this->on(static::EVENT_BEFORE_UPDATE, [$this, 'onBeforeSave']);
-        $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterSave']);
+        $this->on(static::EVENT_AFTER_INSERT,  [$this, 'onAfterInsert']);
         $this->on(static::EVENT_AFTER_UPDATE,  [$this, 'onAfterSave']);
     }
 
@@ -104,6 +106,12 @@ class Client extends \yii\db\ActiveRecord
         }
     }
 
+    public function onAfterInsert()
+    {
+        $this->onAfterSave();
+        $this->saveReferralParams();
+    }
+
     private function isEmailConfirmAction(): bool
     {
         $currentConfirmedEmail = $this->readValue('contact:email_confirmed');
@@ -128,6 +136,18 @@ class Client extends \yii\db\ActiveRecord
         $this->saveValue('contact:gdpr_consent', 1);
         $this->saveValue('client,mailing:commercial', $send_news);
         $this->saveValue('client,mailing:newsletters', $send_news);
+
+        $this->saveReferralParams();
+    }
+
+    private function saveReferralParams(): void
+    {
+        if (!empty($this->referralParams['referer'])) {
+            $this->saveValue("client,registration:referer", $this->referralParams['referer']);
+        }
+        if (!empty($this->referralParams['utmTags'])) {
+            $this->saveValue("client,registration:utm_tags", Json::encode($this->referralParams['utmTags']));
+        }
     }
 
     protected $_again;
@@ -143,7 +163,7 @@ class Client extends \yii\db\ActiveRecord
         return $this->_again;
     }
 
-    private function readValue(string $prop): string
+    private function readValue(string $prop): ?string
     {
         $params = [
             'id' => $this->id,

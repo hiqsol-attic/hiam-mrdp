@@ -9,6 +9,7 @@
  */
 
 return [
+    'as saveReferralParams' => \hiam\mrdp\behaviors\SaveReferralParams::class,
     'aliases' => [
         '@runtime/var'      => $params['hiapi.var_dir'],
         '@runtime/tokens'   => '@runtime/var/tokens',
@@ -43,6 +44,11 @@ return [
             \hiam\providers\ClaimsProviderInterface::class => \hiam\mrdp\providers\ClaimsProvider::class,
             \hiam\validators\PasswordValidatorInterface::class => \hiam\mrdp\validators\PasswordValidator::class,
             \hiam\validators\LoginValidatorInterface::class => \hiam\mrdp\validators\LoginValidator::class,
+        ],
+        'definitions' => [
+            \hiam\mrdp\models\Identity::class => [
+                'as saveReferralParams' => \hiam\mrdp\behaviors\SaveReferralParams::class,
+            ],
         ],
     ],
 ];

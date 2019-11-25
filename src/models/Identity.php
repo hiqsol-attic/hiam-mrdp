@@ -10,6 +10,8 @@
 
 namespace hiam\mrdp\models;
 
+use hiam\behaviors\SaveReferralParams;
+
 /**
  * Identity model for MRDP database.
  *
@@ -25,6 +27,7 @@ class Identity extends \hiam\models\Identity
     public $email_confirmed;
     public $email_new;
     public $send_me_news;
+    public $referralParams;
 
     protected $activeStates = ['ok', 'active'];
 
