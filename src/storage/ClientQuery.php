@@ -29,6 +29,7 @@ class ClientQuery extends \yii\db\ActiveQuery
                 'k.first_name   AS first_name',
                 'k.last_name    AS last_name',
                 't.value        AS totp_secret',
+                'to_1(has_deposits(c.obj_id)) AS verified',
                 'coalesce(i.value,l.value) AS allowed_ips',
                 'coalesce(c.email,k.email) AS email',
                 "encode(digest(c.password, 'sha1'), 'hex') AS password_hash",

@@ -26,6 +26,7 @@ class Identity extends \hiam\models\Identity
     public $seller_id;
     public $email_confirmed;
     public $email_new;
+    public $verified;
     public $send_me_news;
     public $referralParams;
 
@@ -44,6 +45,7 @@ class Identity extends \hiam\models\Identity
 
             ['roles',           'trim'],
             ['email_confirmed', 'email'],
+            ['verified',        'boolean'],
             ['send_me_news',    'boolean'],
         ]);
     }
