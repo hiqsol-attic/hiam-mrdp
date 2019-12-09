@@ -26,6 +26,15 @@ return [
                 'registration/<action>' => 'mrdp/registration/<action>',
             ],
         ],
+        'log' => [
+            'targets' => [
+                'monitoring' => [
+                    'except' => [
+                        'yii\\web\\HttpException:403',
+                    ],
+                ],
+            ],
+        ],
     ],
     'modules' => [
         'mrdp' => [
