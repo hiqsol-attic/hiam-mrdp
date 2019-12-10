@@ -46,7 +46,7 @@ class SaveReferralParams extends \yii\base\Behavior
             }
         }
         $referalParams = array_filter([
-            'referer' => $params['atid'],
+            'referer' => $params['refid'],
             'utmTags' => $utmTags,
         ]);
         if (!empty($referalParams)) {
