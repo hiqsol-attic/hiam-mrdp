@@ -53,4 +53,10 @@ class MrdpController extends \yii\web\Controller
     {
         return Yii::$app->user;
     }
+
+    public function actionTestReferralParams()
+    {
+        return $this->render('test-referral-params', ['params' => $_GET]);
+    }
+
 }
