@@ -14,6 +14,7 @@ use hiam\mrdp\models\Identity;
 use Yii;
 use yii\base\Application;
 use yii\base\Event;
+use yii\web\Request;
 
 /**
  * SaveReturnUrl behavior.
@@ -38,20 +39,39 @@ class SaveReferralParams extends \yii\base\Behavior
      */
     public function beforeRequest(Event $event): void
     {
-        $params = Yii::$app->request->getQueryParams();
+        $request = Yii::$app->getRequest();
+        $referralParams = $this->getFromQuery($request) ?: $this->getFromReferrer($request);
+        if (!empty($referralParams)) {
+            Yii::$app->session->set('referralParams', $referralParams);
+        }
+    }
+
+    private function getFromQuery(Request $request)
+    {
+        $params = $request->getQueryParams();
+
+        return $this->getFromArray($params);
+    }
+
+    private function getFromReferrer(Request $request)
+    {
+        parse_str(parse_url($request->getReferrer(), PHP_URL_QUERY), $params);
+
+        return $this->getFromArray($params);
+    }
+
+    private function getFromArray(array $params)
+    {
         $utmTags = [];
         foreach ($params as $name => $value) {
             if (strstr($name, 'utm_')) {
                 $utmTags[$name] = $value;
             }
         }
-        $referalParams = array_filter([
+        return array_filter([
             'referer' => $params['refid'],
             'utmTags' => $utmTags,
         ]);
-        if (!empty($referalParams)) {
-            Yii::$app->session->set('referralParams', $referalParams);
-        }
     }
 
 
